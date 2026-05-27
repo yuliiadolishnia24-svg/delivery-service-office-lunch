@@ -1,0 +1,105 @@
+asyncapi: 2.6.0
+
+info:
+  title: Delivery Service Events API
+  version: 1.0.0
+  description: AsyncAPI specification for Office Lunch Delivery System
+
+servers:
+  rabbitmq:
+    url: localhost:5672
+    protocol: amqp
+
+channels:
+
+  order.created:
+    publish:
+      summary: Event published when a new office order is created
+      message:
+        $ref: '#/components/messages/OrderCreated'
+
+  order.confirmed:
+    publish:
+      summary: Event published when an order is confirmed
+      message:
+        $ref: '#/components/messages/OrderConfirmed'
+
+  meal.added:
+    publish:
+      summary: Event published when a meal is added to an order
+      message:
+        $ref: '#/components/messages/MealAdded'
+
+  delivery.started:
+    subscribe:
+      summary: Event received when delivery process starts
+      message:
+        $ref: '#/components/messages/DeliveryStarted'
+
+  delivery.completed:
+    subscribe:
+      summary: Event received when delivery is completed
+      message:
+        $ref: '#/components/messages/DeliveryCompleted'
+
+components:
+
+  messages:
+
+    OrderCreated:
+      payload:
+        type: object
+        properties:
+          orderId:
+            type: integer
+          officeId:
+            type: integer
+          createdAt:
+            type: string
+            format: date-time
+
+    OrderConfirmed:
+      payload:
+        type: object
+        properties:
+          orderId:
+            type: integer
+          confirmedAt:
+            type: string
+            format: date-time
+
+    MealAdded:
+      payload:
+        type: object
+        properties:
+          orderId:
+            type: integer
+          mealId:
+            type: integer
+          quantity:
+            type: integer
+
+    DeliveryStarted:
+      payload:
+        type: object
+        properties:
+          orderId:
+            type: integer
+          courierName:
+            type: string
+          startedAt:
+            type: string
+            format: date-time
+
+    DeliveryCompleted:
+      payload:
+        type: object
+        properties:
+          orderId:
+            type: integer
+          deliveredAt:
+            type: string
+            format: date-time
+          status:
+            type: string
+            example: delivered
